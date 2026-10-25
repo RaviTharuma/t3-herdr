@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { chmod, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { chmod, mkdtemp, readFile, readdir, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { diagnoseHost, disableHost, installHost, queryStatus } from "../src/install";
@@ -105,7 +105,7 @@ describe("T3 host installation", () => {
     const files = await stateFiles(f.stateHome);
     const association = files.find((x) => x.endsWith(".json"))!;
     const secret = files.find((x) => x.endsWith(".secret"))!;
-    expect(JSON.parse(await readFile(join(f.stateHome, association), "utf8"))).toEqual({ protocolVersion: 1, baseDir: f.dir, secretFile: join(f.stateHome, secret) });
+    expect(JSON.parse(await readFile(join(f.stateHome, association), "utf8"))).toEqual({ protocolVersion: 1, baseDir: await realpath(f.dir), secretFile: join(f.stateHome, secret) });
     expect(JSON.parse(await readFile(f.policy, "utf8")).secretFile).toBe(join(f.stateHome, secret));
   }));
 

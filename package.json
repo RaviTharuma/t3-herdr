@@ -1,6 +1,6 @@
 {
   "name": "t3-herdr",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Installable Herdr whole-environment host for compatible T3 releases.",
   "license": "MIT",
@@ -22,11 +22,13 @@
     "bun": ">=1.3.0"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json && chmod +x dist/cli.js dist/runner.js && bun build --compile src/cli.ts --outfile dist/t3-herdr-host",
+    "build": "bun scripts/build.ts",
     "test": "bun test",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check": "bun run typecheck && bun test && bun run build",
-    "prepack": "bun run check"
+    "prepack": "bun run check",
+    "build:darwin-arm64": "bun scripts/build.ts darwin-arm64",
+    "build:linux-x64": "bun scripts/build.ts linux-x64"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -34,9 +36,11 @@
     "typescript": "latest"
   },
   "os": [
+    "darwin",
     "linux"
   ],
   "cpu": [
+    "arm64",
     "x64"
   ]
 }

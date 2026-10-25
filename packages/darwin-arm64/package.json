@@ -1,0 +1,14 @@
+{
+  "name": "@t3-herdr/darwin-arm64",
+  "version": "0.2.0",
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "files": [
+    "bin"
+  ],
+  "license": "MIT"
+}

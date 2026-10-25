@@ -12,7 +12,7 @@ describe("packed CLI metadata", () => {
   test("--version prints the package version and exits successfully", () => {
     const result = run("--version");
     expect(result.exitCode).toBe(0);
-    expect(result.stdout.toString()).toBe("0.1.0\n");
+    expect(result.stdout.toString()).toBe("0.2.0\n");
     expect(result.stderr.toString()).toBe("");
   });
 });

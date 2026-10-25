@@ -1,0 +1,20 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: linux-x64 }
+          - { os: macos-14, target: darwin-arm64 }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun test
+      - run: bun scripts/build.ts ${{ matrix.target }}
+      - run: file dist/t3-herdr-host dist/t3-herdr-process-identity
+      - run: shasum -a 256 dist/t3-herdr-host dist/t3-herdr-process-identity
+      - run: bun pm pack

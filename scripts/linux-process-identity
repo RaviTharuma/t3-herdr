@@ -1,0 +1,3 @@
+#!/bin/sh
+set -eu
+pid=${1:-$$}; stat=$(cat "/proc/$pid/stat"); after=${stat##*) }; start=$(printf '%s\n' "$after"|cut -d' ' -f20); boot=$(cat /proc/sys/kernel/random/boot_id); exe=$(readlink -f "/proc/$pid/exe"); printf '{"processId":%s,"startTime":"%s","bootId":"%s","executable":"%s"}\n' "$pid" "$start" "$boot" "$exe"

@@ -1,0 +1,30 @@
+name: Release
+on:
+  push:
+    tags: ["v*"]
+permissions: { contents: write }
+jobs:
+  artifact:
+    strategy:
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: linux-x64 }
+          - { os: macos-14, target: darwin-arm64 }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun scripts/build.ts ${{ matrix.target }}
+      - run: tar -czf t3-herdr-${{ matrix.target }}.tar.gz -C dist t3-herdr-host t3-herdr-process-identity
+      - run: shasum -a 256 t3-herdr-${{ matrix.target }}.tar.gz > t3-herdr-${{ matrix.target }}.tar.gz.sha256
+      - uses: actions/upload-artifact@v4
+        with: { name: "${{ matrix.target }}", path: "t3-herdr-${{ matrix.target }}.tar.gz*" }
+  publish:
+    needs: artifact
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: artifacts, merge-multiple: true }
+      - uses: softprops/action-gh-release@v2
+        with: { files: "artifacts/*" }
