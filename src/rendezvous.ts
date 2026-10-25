@@ -1,0 +1,2 @@
+import{chmod,mkdir,rm}from"node:fs/promises";import{createServer,type Server,type Socket}from"node:net";import{dirname}from"node:path";
+export async function listenPrivate(path:string,onSocket:(socket:Socket)=>void):Promise<Server>{await mkdir(dirname(path),{recursive:true,mode:0o700});await chmod(dirname(path),0o700);await rm(path,{force:true});const s=createServer(onSocket);await new Promise<void>((ok,no)=>{s.once("error",no);s.listen(path,ok)});await chmod(path,0o600);return s}
